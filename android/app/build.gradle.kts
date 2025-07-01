@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.locus_flutter"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -24,10 +24,17 @@ android {
         applicationId = "com.example.locus_flutter"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        
+        // API Keys from environment variables
+        val googleMapsApiKey = System.getenv("GOOGLE_MAPS_API_KEY") ?: project.findProperty("GOOGLE_MAPS_API_KEY")?.toString() ?: ""
+        val naverMapsClientId = System.getenv("NAVER_MAPS_CLIENT_ID") ?: project.findProperty("NAVER_MAPS_CLIENT_ID")?.toString() ?: ""
+        
+        resValue("string", "google_maps_api_key", googleMapsApiKey)
+        resValue("string", "naver_maps_client_id", naverMapsClientId)
     }
 
     buildTypes {
