@@ -8,7 +8,7 @@ import 'package:locus_flutter/core/config/map_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Load environment variables
   try {
     await dotenv.load(fileName: ".env");
@@ -18,10 +18,10 @@ void main() async {
     debugPrint('Failed to load .env file: $e');
     debugPrint('Using default API keys');
   }
-  
+
   // Initialize Naver Maps
   try {
-    await NaverMapSdk.instance.initialize(
+    await FlutterNaverMap().init(
       clientId: MapConfig.naverMapsClientId,
       onAuthFailed: (ex) {
         debugPrint('Naver Maps auth failed: $ex');
@@ -31,12 +31,8 @@ void main() async {
   } catch (e) {
     debugPrint('Failed to initialize Naver Maps: $e');
   }
-  
-  runApp(
-    const ProviderScope(
-      child: LocusApp(),
-    ),
-  );
+
+  runApp(const ProviderScope(child: LocusApp()));
 }
 
 class LocusApp extends StatelessWidget {
