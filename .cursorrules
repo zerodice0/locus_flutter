@@ -1,0 +1,163 @@
+# Locus - 위치 기반 장소 저장 및 추천 앱 개발 가이드
+
+## 프로젝트 목표
+Locus는 사용자가 가고 싶은 장소들을 지도에 저장하고, 현재 위치 기준으로 근처에 있는 장소들을 Tinder 스타일로 스와이프하여 최종 목적지를 결정하는 Flutter 앱입니다.
+
+## 핵심 기능
+- 지도에서 장소 선택 및 정보 저장
+- 카테고리별 장소 분류 (음식점, 카페, 상점, 관광지 등)
+- 운영시간 및 이벤트 기간 설정
+- 현재 위치 기준 근처 장소 검색 (적응형 반경)
+- 카드/리스트 스와이프를 통한 장소 선택
+- 로컬 데이터베이스 기반
+
+## 기술 스택 및 아키텍처
+- **Framework**: Flutter (Dart)
+- **State Management**: Riverpod
+- **Architecture**: Clean Architecture + MVVM
+- **Database**: SQLite (sqflite)
+- **Maps**: Naver Maps (국내) + Google Maps (해외) - 투트랙 전략
+- **Navigation**: GoRouter
+
+## 프로젝트 구조
+```
+lib/
+├── core/
+│   ├── config/             # 앱 설정 및 초기화
+│   ├── constants/          # 앱 상수 정의
+│   ├── database/           # 데이터베이스 헬퍼 및 테이블
+│   ├── errors/             # 예외 및 에러 처리
+│   ├── routes/             # 라우팅 설정
+│   ├── services/           # 외부 서비스 (지도, 위치, 지오코딩)
+│   ├── theme/              # 앱 테마 및 디자인 시스템
+│   └── utils/              # 유틸리티 함수들
+├── features/
+│   ├── common/             # 공통 UI 컴포넌트 및 프로바이더
+│   ├── place_management/   # 장소 추가/편집/관리 기능
+│   ├── place_discovery/    # 장소 탐색 및 스와이프 기능
+│   └── settings/           # 앱 설정 및 환경설정
+└── main.dart
+```
+
+각 feature는 다음 구조를 따릅니다:
+```
+feature_name/
+├── data/
+│   ├── datasources/        # 로컬/원격 데이터 소스
+│   ├── models/             # 데이터 모델 (JSON 직렬화)
+│   └── repositories/       # Repository 구현체
+├── domain/
+│   ├── entities/           # 도메인 엔티티 (비즈니스 로직)
+│   ├── repositories/       # Repository 인터페이스
+│   └── usecases/           # 비즈니스 로직 유스케이스
+└── presentation/
+    ├── pages/              # 화면/페이지
+    ├── widgets/            # UI 컴포넌트
+    └── providers/          # Riverpod 프로바이더
+```
+
+## 코딩 규칙
+
+### 언어 및 응답
+- **모든 응답은 한글로 작성**
+- 코드 주석과 변수명은 영어로 작성
+- 기술적 설명이나 가이드는 반드시 한글로 작성
+
+### 코딩 스타일
+- **함수형 프로그래밍 선호**: 순수 함수, 불변성, 고차 함수 활용
+- **Clean Architecture 준수**: 의존성 규칙 엄격히 적용
+- **SOLID 원칙 적용**: 단일 책임, 개방-폐쇄, 의존성 역전 등
+- **Freezed 사용**: 불변 객체 및 유니온 타입 활용
+- **Riverpod 패턴**: StateNotifier, Provider, Consumer 적절히 활용
+
+### 파일 명명 규칙
+- **파일명**: snake_case
+- **클래스명**: PascalCase
+- **변수/함수명**: camelCase
+- **상수명**: UPPER_SNAKE_CASE
+
+### 지도 서비스 추상화
+- MapService 인터페이스를 통한 완전 추상화
+- NaverMapService (국내) / GoogleMapService (해외) 구현체
+- MapProviderService로 위치 기반 자동 선택
+- UniversalLatLng 클래스로 좌표 시스템 통합
+
+### 상태 관리
+- Riverpod Provider 패턴 활용
+- 로컬 상태와 전역 상태 명확히 구분
+- AsyncValue를 통한 로딩/에러 상태 관리
+- StateNotifier 활용한 복잡한 상태 관리
+
+### 에러 처리
+- Custom Exception 정의 및 활용
+- Failure 클래스를 통한 에러 추상화
+- Either 패턴 (dartz 패키지) 또는 Result 패턴 활용
+
+### 데이터베이스
+- SQLite 기반 로컬 스토리지
+- Repository 패턴을 통한 데이터 접근 추상화
+- 데이터 모델과 엔티티 분리
+- 마이그레이션 전략 수립
+
+### 테스트
+- Unit Test: 모든 UseCase 및 Repository
+- Widget Test: 주요 UI 컴포넌트
+- Integration Test: 핵심 사용자 플로우
+
+### 성능 최적화
+- 이미지 최적화 및 캐싱
+- 메모리 누수 방지
+- 거리 계산 시 Isolate 활용 (대량 데이터)
+- 위젯 트리 최적화
+
+## 개발 가이드라인
+
+### 새로운 기능 추가 시
+1. Domain Entity 및 Repository 인터페이스 정의
+2. UseCase 구현
+3. Data Layer (DataSource, Model, Repository 구현체) 구현
+4. Presentation Layer (Provider, Page, Widget) 구현
+5. 테스트 코드 작성
+
+### 지도 기능 구현 시
+- 반드시 MapService 인터페이스 활용
+- 지역별 최적 지도 서비스 자동 선택
+- UniversalLatLng로 좌표 통합 관리
+- 권한 처리 및 에러 핸들링 필수
+
+### UI/UX 가이드라인
+- Material Design 3 기반
+- Locus 브랜드 컬러 (블루/그린 + 오렌지 액센트)
+- 접근성 고려 (시각 장애인 지원, 폰트 크기 대응)
+- 반응형 디자인 (다양한 화면 크기 지원)
+
+### 코드 품질
+- Dart 린트 규칙 준수
+- 코드 리뷰 필수
+- 문서화 주석 작성
+- 성능 모니터링
+
+### 국제화 준비
+- 하드코딩된 문자열 금지
+- l10n 패키지 활용 준비
+- 향후 다국어 지원 대비
+
+## 커밋 메시지 규칙
+- 언어: 영문
+- 형식: 
+  - feat: Add a new feature
+  - fix: Fix a bug
+  - docs: Update documentation
+  - style: Format code, missing semicolons, etc. (no code change)
+  - refactor: Refactor code
+  - test: Add or update tests
+  - chore: Update build process or auxiliary tools
+
+## 주의사항
+- 절대 하드코딩된 API 키나 민감 정보 포함 금지
+- .env 파일 및 환경 변수 활용
+- 개인정보 보호 및 데이터 보안 고려
+- 오프라인 모드 지원 필수
+- 배터리 최적화 고려
+
+이 가이드라인을 준수하여 일관성 있고 확장 가능한 Locus 앱을 개발해주세요. 

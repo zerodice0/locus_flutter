@@ -18,6 +18,15 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# Environment variables and API keys
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+api_keys.dart
+secrets.dart
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
