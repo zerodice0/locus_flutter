@@ -134,7 +134,7 @@ class _UniversalMapWidgetState extends ConsumerState<UniversalMapWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryGreen),
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
             ),
             SizedBox(height: 16),
             Text(
@@ -177,7 +177,7 @@ class _UniversalMapWidgetState extends ConsumerState<UniversalMapWidget> {
               ElevatedButton(
                 onPressed: _determineMapService,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
+                  backgroundColor: AppTheme.primaryBlue,
                 ),
                 child: const Text('다시 시도'),
               ),
@@ -222,11 +222,11 @@ class _UniversalMapWidgetState extends ConsumerState<UniversalMapWidget> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -240,7 +240,7 @@ class _UniversalMapWidgetState extends ConsumerState<UniversalMapWidget> {
                   ? Icons.map
                   : Icons.public,
               size: 16,
-              color: AppTheme.primaryGreen,
+              color: AppTheme.primaryBlue,
             ),
             const SizedBox(width: 4),
             Text(
@@ -248,7 +248,7 @@ class _UniversalMapWidgetState extends ConsumerState<UniversalMapWidget> {
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primaryGreen,
+                color: AppTheme.primaryBlue,
               ),
             ),
           ],

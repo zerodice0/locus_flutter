@@ -131,7 +131,7 @@ class _OperatingHoursPickerState extends State<OperatingHoursPicker> {
               child: Switch(
                 value: !hours.isClosed,
                 onChanged: (isOpen) => _updateHours(hours.copyWith(isClosed: !isOpen)),
-                activeColor: AppTheme.primaryGreen,
+                activeColor: AppTheme.primaryBlue,
               ),
             ),
             const SizedBox(width: 16),
@@ -260,7 +260,7 @@ class _OperatingHoursPickerState extends State<OperatingHoursPicker> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: AppTheme.primaryGreen,
+              primary: AppTheme.primaryBlue,
             ),
           ),
           child: child!,

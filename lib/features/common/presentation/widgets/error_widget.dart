@@ -92,7 +92,7 @@ class CustomErrorWidget extends StatelessWidget {
                 icon: const Icon(Icons.refresh),
                 label: Text(retryButtonText ?? '다시 시도'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
+                  backgroundColor: AppTheme.primaryBlue,
                   foregroundColor: Colors.white,
                 ),
               ),

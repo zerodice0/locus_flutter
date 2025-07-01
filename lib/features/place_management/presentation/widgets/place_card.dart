@@ -45,7 +45,7 @@ class PlaceCard extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Color(int.parse('0xFF${category.color}')).withOpacity(0.2),
+                        color: Color(int.parse('0xFF${category.color}')).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
@@ -111,7 +111,7 @@ class PlaceCard extends ConsumerWidget {
                         Text(
                           MapConstants.formatDistance(distanceFromUser!),
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryGreen,
+                            color: AppTheme.primaryBlue,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -168,7 +168,7 @@ class PlaceCard extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: place.isCurrentlyOpen 
-                          ? AppTheme.successGreen.withOpacity(0.2)
+                          ? AppTheme.successGreen.withValues(alpha: 0.2)
                           : Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(12),
                     ),

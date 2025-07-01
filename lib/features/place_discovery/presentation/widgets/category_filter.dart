@@ -29,9 +29,7 @@ class CategoryFilter extends StatelessWidget {
                   onPressed: _toggleSelectAll,
                   child: Text(
                     _isAllSelected ? '전체 해제' : '전체 선택',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                    style: TextStyle(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ],
@@ -42,7 +40,7 @@ class CategoryFilter extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(
@@ -58,10 +56,13 @@ class CategoryFilter extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: categories.map((category) {
-                  final isSelected = selectedCategoryIds.contains(category.id);
-                  return _buildCategoryChip(context, category, isSelected);
-                }).toList(),
+                children:
+                    categories.map((category) {
+                      final isSelected = selectedCategoryIds.contains(
+                        category.id,
+                      );
+                      return _buildCategoryChip(context, category, isSelected);
+                    }).toList(),
               ),
           ],
         ),
@@ -69,7 +70,11 @@ class CategoryFilter extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryChip(BuildContext context, Category category, bool isSelected) {
+  Widget _buildCategoryChip(
+    BuildContext context,
+    Category category,
+    bool isSelected,
+  ) {
     return FilterChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
@@ -86,11 +91,9 @@ class CategoryFilter extends StatelessWidget {
       selected: isSelected,
       onSelected: (selected) => _toggleCategory(category.id, selected),
       selectedColor: _getColorFromHex(category.color),
-      backgroundColor: _getColorFromHex(category.color).withOpacity(0.1),
+      backgroundColor: _getColorFromHex(category.color).withValues(alpha: 0.1),
       checkmarkColor: Colors.white,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Colors.black87,
-      ),
+      labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black87),
     );
   }
 
@@ -139,7 +142,7 @@ class CategoryFilter extends StatelessWidget {
 
   void _toggleCategory(String categoryId, bool selected) {
     final newSelection = List<String>.from(selectedCategoryIds);
-    
+
     if (selected) {
       if (!newSelection.contains(categoryId)) {
         newSelection.add(categoryId);
@@ -147,7 +150,7 @@ class CategoryFilter extends StatelessWidget {
     } else {
       newSelection.remove(categoryId);
     }
-    
+
     onSelectionChanged(newSelection);
   }
 }

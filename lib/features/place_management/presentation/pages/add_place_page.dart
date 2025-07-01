@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:locus_flutter/features/common/presentation/widgets/custom_app_bar.dart';
-import 'package:locus_flutter/features/common/presentation/widgets/loading_widget.dart';
-import 'package:locus_flutter/features/common/presentation/widgets/loading_overlay.dart' as loading;
+import 'package:locus_flutter/features/common/presentation/widgets/loading_overlay.dart'
+    as loading;
 import 'package:locus_flutter/features/place_management/presentation/providers/place_form_provider.dart';
 import 'package:locus_flutter/features/place_management/presentation/providers/place_provider.dart';
 import 'package:locus_flutter/features/place_management/presentation/widgets/category_selector.dart';
 import 'package:locus_flutter/features/place_management/presentation/widgets/operating_hours_picker.dart';
 import 'package:locus_flutter/features/place_management/presentation/widgets/event_periods_picker.dart';
 import 'package:locus_flutter/features/place_management/presentation/widgets/duplicate_warning_dialog.dart';
-import 'package:locus_flutter/features/place_management/domain/usecases/detect_duplicate_places.dart';
-import 'package:locus_flutter/features/common/presentation/providers/location_provider.dart';
 import 'package:locus_flutter/core/theme/app_theme.dart';
 import 'package:locus_flutter/core/services/map/map_service.dart';
 
@@ -28,7 +26,7 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
   final _descriptionController = TextEditingController();
   final _addressController = TextEditingController();
   final _notesController = TextEditingController();
-  
+
   bool _isLoading = false;
 
   @override
@@ -46,9 +44,7 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
     final formNotifier = ref.read(placeFormProvider.notifier);
 
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: '장소 추가',
-      ),
+      appBar: const CustomAppBar(title: '장소 추가'),
       body: loading.LoadingOverlay(
         isLoading: _isLoading,
         loadingMessage: '장소를 저장하는 중...',
@@ -62,45 +58,48 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
                 // Location selector
                 _buildLocationSelector(formState, formNotifier),
                 const SizedBox(height: 24),
-                
+
                 // Name field
                 _buildNameField(formState, formNotifier),
                 const SizedBox(height: 16),
-                
+
                 // Description field
                 _buildDescriptionField(formNotifier),
                 const SizedBox(height: 16),
-                
+
                 // Address field
                 _buildAddressField(formNotifier),
                 const SizedBox(height: 24),
-                
+
                 // Category selector
                 CategorySelector(
-                  selectedCategoryId: formState.categoryId.isEmpty ? null : formState.categoryId,
+                  selectedCategoryId:
+                      formState.categoryId.isEmpty
+                          ? null
+                          : formState.categoryId,
                   onCategorySelected: formNotifier.updateCategoryId,
                   errorText: formNotifier.getError('categoryId'),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Notes field
                 _buildNotesField(formNotifier),
                 const SizedBox(height: 24),
-                
+
                 // Operating hours
                 OperatingHoursPicker(
                   operatingHours: formState.operatingHours,
                   onChanged: formNotifier.updateOperatingHours,
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Event periods
                 EventPeriodsPicker(
                   eventPeriods: formState.eventPeriods,
                   onChanged: formNotifier.updateEventPeriods,
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Save button
                 _buildSaveButton(formState),
               ],
@@ -111,7 +110,10 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
     );
   }
 
-  Widget _buildLocationSelector(PlaceFormState formState, PlaceFormNotifier formNotifier) {
+  Widget _buildLocationSelector(
+    PlaceFormState formState,
+    PlaceFormNotifier formNotifier,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -126,9 +128,10 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             border: Border.all(
-              color: formNotifier.hasError('location') 
-                  ? AppTheme.errorRed 
-                  : Colors.grey.shade300,
+              color:
+                  formNotifier.hasError('location')
+                      ? AppTheme.errorRed
+                      : Colors.grey.shade300,
             ),
             borderRadius: BorderRadius.circular(12),
           ),
@@ -139,7 +142,7 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
                   children: [
                     Icon(
                       Icons.location_on,
-                      color: AppTheme.primaryGreen,
+                      color: AppTheme.primaryBlue,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
@@ -159,9 +162,10 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
                 icon: const Icon(Icons.map),
                 label: Text(formState.location != null ? '위치 변경' : '지도에서 선택'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: formState.location != null 
-                      ? AppTheme.primaryGreen 
-                      : Colors.grey.shade400,
+                  backgroundColor:
+                      formState.location != null
+                          ? AppTheme.primaryBlue
+                          : Colors.grey.shade400,
                 ),
               ),
             ],
@@ -178,7 +182,10 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
     );
   }
 
-  Widget _buildNameField(PlaceFormState formState, PlaceFormNotifier formNotifier) {
+  Widget _buildNameField(
+    PlaceFormState formState,
+    PlaceFormNotifier formNotifier,
+  ) {
     return TextFormField(
       controller: _nameController,
       decoration: InputDecoration(
@@ -249,7 +256,9 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
   }
 
   Future<void> _selectLocation(PlaceFormNotifier formNotifier) async {
-    final selectedLocation = await context.push<UniversalLatLng>('/real-map-picker');
+    final selectedLocation = await context.push<UniversalLatLng>(
+      '/real-map-picker',
+    );
     if (selectedLocation != null) {
       formNotifier.updateLocation(selectedLocation);
     }
@@ -263,7 +272,7 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
     try {
       final formNotifier = ref.read(placeFormProvider.notifier);
       final formState = ref.read(placeFormProvider);
-      
+
       // 중복 검사 수행
       final validateNewPlaceUseCase = ref.read(validateNewPlaceUseCaseProvider);
       final validationResult = await validateNewPlaceUseCase.call(
@@ -276,14 +285,16 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
 
       // 중복 장소가 있는 경우 경고 다이얼로그 표시
       if (validationResult.hasDuplicates) {
+        if (!mounted) return;
         final shouldProceed = await showDialog<bool>(
           context: context,
-          builder: (context) => DuplicateWarningDialog(
-            newPlace: formNotifier.createPlace(),
-            duplicateCandiates: validationResult.duplicatePlaces,
-            onProceed: () => Navigator.of(context).pop(true),
-            onCancel: () => Navigator.of(context).pop(false),
-          ),
+          builder:
+              (context) => DuplicateWarningDialog(
+                newPlace: formNotifier.createPlace(),
+                duplicateCandiates: validationResult.duplicatePlaces,
+                onProceed: () => Navigator.of(context).pop(true),
+                onCancel: () => Navigator.of(context).pop(false),
+              ),
         );
 
         if (shouldProceed != true) {
@@ -299,7 +310,7 @@ class _AddPlacePageState extends ConsumerState<AddPlacePage> {
 
       final place = formNotifier.createPlace();
       await addPlaceUseCase(place);
-      
+
       // 장소 목록 새로고침
       await placesNotifier.refreshPlaces();
 

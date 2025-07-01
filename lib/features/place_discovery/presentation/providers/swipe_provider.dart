@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:locus_flutter/features/place_discovery/domain/entities/place_with_distance.dart';
 import 'package:locus_flutter/features/place_discovery/domain/entities/swipe_action.dart';
-import 'package:locus_flutter/features/place_discovery/presentation/providers/search_provider.dart';
 import 'package:uuid/uuid.dart';
 
 // Swipe session provider
 final swipeSessionProvider = StateProvider<String?>((ref) => null);
 
 // Current swipe deck provider
-final swipeDeckProvider = StateNotifierProvider<SwipeDeckNotifier, SwipeDeckState>(
-  (ref) => SwipeDeckNotifier(),
-);
+final swipeDeckProvider =
+    StateNotifierProvider<SwipeDeckNotifier, SwipeDeckState>(
+      (ref) => SwipeDeckNotifier(),
+    );
 
 // Swipe deck state
 class SwipeDeckState {
@@ -63,9 +63,10 @@ class SwipeDeckState {
   }
 
   bool get hasMorePlaces => currentIndex < places.length;
-  
-  int get remainingCount => (places.length - currentIndex).clamp(0, places.length);
-  
+
+  int get remainingCount =>
+      (places.length - currentIndex).clamp(0, places.length);
+
   double get progress => places.isEmpty ? 0.0 : currentIndex / places.length;
 }
 
@@ -134,7 +135,10 @@ class SwipeDeckNotifier extends StateNotifier<SwipeDeckState> {
   void undoLastSwipe() {
     if (state.swipeHistory.isEmpty || state.currentIndex <= 0) return;
 
-    final newSwipeHistory = state.swipeHistory.sublist(0, state.swipeHistory.length - 1);
+    final newSwipeHistory = state.swipeHistory.sublist(
+      0,
+      state.swipeHistory.length - 1,
+    );
     final newIndex = state.currentIndex - 1;
 
     state = state.copyWith(
@@ -150,9 +154,6 @@ class SwipeDeckNotifier extends StateNotifier<SwipeDeckState> {
   }
 
   void completeDeckManually(PlaceWithDistance selectedPlace) {
-    state = state.copyWith(
-      selectedPlace: selectedPlace,
-      isComplete: true,
-    );
+    state = state.copyWith(selectedPlace: selectedPlace, isComplete: true);
   }
 }

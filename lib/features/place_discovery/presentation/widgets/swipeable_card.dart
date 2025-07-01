@@ -64,10 +64,7 @@ class _SwipeableCardState extends State<SwipeableCard>
         offset: _offset,
         child: Transform.rotate(
           angle: _rotation,
-          child: Transform.scale(
-            scale: _scale,
-            child: _buildCard(),
-          ),
+          child: Transform.scale(scale: _scale, child: _buildCard()),
         ),
       ),
     );
@@ -84,7 +81,7 @@ class _SwipeableCardState extends State<SwipeableCard>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -93,9 +90,7 @@ class _SwipeableCardState extends State<SwipeableCard>
       child: Card(
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           children: [
             // Background image placeholder
@@ -105,7 +100,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                 gradient: LinearGradient(
                   colors: [
                     _getCategoryColor(place.categoryId),
-                    _getCategoryColor(place.categoryId).withOpacity(0.7),
+                    _getCategoryColor(place.categoryId).withValues(alpha: 0.7),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -115,7 +110,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                 child: Icon(
                   _getCategoryIcon(place.categoryId),
                   size: 80,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ),
@@ -130,14 +125,13 @@ class _SwipeableCardState extends State<SwipeableCard>
                   children: [
                     Text(
                       place.name,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    
+
                     Row(
                       children: [
                         Icon(
@@ -148,7 +142,9 @@ class _SwipeableCardState extends State<SwipeableCard>
                         const SizedBox(width: 4),
                         Text(
                           widget.placeWithDistance.formattedDistance,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall?.copyWith(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
@@ -160,9 +156,12 @@ class _SwipeableCardState extends State<SwipeableCard>
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: widget.placeWithDistance.proximityLabel == '매우 가까움'
-                                ? Colors.green
-                                : widget.placeWithDistance.proximityLabel == '가까움'
+                            color:
+                                widget.placeWithDistance.proximityLabel ==
+                                        '매우 가까움'
+                                    ? Colors.green
+                                    : widget.placeWithDistance.proximityLabel ==
+                                        '가까움'
                                     ? Colors.orange
                                     : Colors.grey,
                             borderRadius: BorderRadius.circular(12),
@@ -183,18 +182,13 @@ class _SwipeableCardState extends State<SwipeableCard>
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(
-                            Icons.home,
-                            size: 16,
-                            color: Colors.grey[600],
-                          ),
+                          Icon(Icons.home, size: 16, color: Colors.grey[600]),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               place.address ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: Colors.grey[600]),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -240,11 +234,11 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   Color? _getOverlayColor() {
     const threshold = 100.0;
-    
+
     if (_offset.dx > threshold) {
-      return Colors.green.withOpacity(0.7);
+      return Colors.green.withValues(alpha: 0.7);
     } else if (_offset.dx < -threshold) {
-      return Colors.red.withOpacity(0.7);
+      return Colors.red.withValues(alpha: 0.7);
     }
     return null;
   }
@@ -304,9 +298,9 @@ class _SwipeableCardState extends State<SwipeableCard>
 
   void _onPanEnd(DragEndDetails details) {
     _scaleController.reverse();
-    
+
     const threshold = 100.0;
-    
+
     if (_offset.dx.abs() > threshold) {
       // Swipe completed
       if (_offset.dx > 0) {
@@ -324,15 +318,14 @@ class _SwipeableCardState extends State<SwipeableCard>
     _animationController.forward().then((_) {
       widget.onSwipeRight?.call();
     });
-    
+
     final animation = Tween<Offset>(
       begin: _offset,
       end: Offset(MediaQuery.of(context).size.width, _offset.dy),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
     animation.addListener(() {
       setState(() {
         _offset = animation.value;
@@ -345,15 +338,14 @@ class _SwipeableCardState extends State<SwipeableCard>
     _animationController.forward().then((_) {
       widget.onSwipeLeft?.call();
     });
-    
+
     final animation = Tween<Offset>(
       begin: _offset,
       end: Offset(-MediaQuery.of(context).size.width, _offset.dy),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
     animation.addListener(() {
       setState(() {
         _offset = animation.value;
@@ -366,15 +358,11 @@ class _SwipeableCardState extends State<SwipeableCard>
     _animationController.forward().then((_) {
       _animationController.reset();
     });
-    
-    final animation = Tween<Offset>(
-      begin: _offset,
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
-    
+
+    final animation = Tween<Offset>(begin: _offset, end: Offset.zero).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
+
     animation.addListener(() {
       setState(() {
         _offset = animation.value;

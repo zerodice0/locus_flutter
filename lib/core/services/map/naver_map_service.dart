@@ -8,21 +8,21 @@ import 'package:locus_flutter/core/services/location/geocoding_service.dart';
 class NaverMapService implements MapService {
   @override
   MapProvider get provider => MapProvider.naver;
-  
+
   nmaps.NaverMapController? _controller;
   final LocationService _locationService;
   final GeocodingService _geocodingService;
-  
+
   final Set<nmaps.NMarker> _markers = {};
   final Map<String, UniversalMarker> _universalMarkers = {};
-  
+
   // Event callbacks
   Function(UniversalLatLng position)? _onMapTap;
-  Function(UniversalLatLng position)? _onMapLongPress;
+  // Function(UniversalLatLng position)? _onMapLongPress; // Currently unused
   Function(String markerId)? _onMarkerTap;
   Function(UniversalCameraPosition position)? _onCameraMove;
   Function(UniversalCameraPosition position)? _onCameraIdle;
-  
+
   NaverMapService({
     required LocationService locationService,
     required GeocodingService geocodingService,
@@ -39,21 +39,29 @@ class NaverMapService implements MapService {
   }
 
   @override
-  Future<void> moveCamera(UniversalCameraPosition position, {bool animate = true}) async {
+  Future<void> moveCamera(
+    UniversalCameraPosition position, {
+    bool animate = true,
+  }) async {
     if (_controller == null) return;
-    
+
     final cameraUpdate = nmaps.NCameraUpdate.withParams(
-      target: nmaps.NLatLng(position.target.latitude, position.target.longitude),
+      target: nmaps.NLatLng(
+        position.target.latitude,
+        position.target.longitude,
+      ),
       zoom: position.zoom,
       bearing: position.bearing,
       tilt: position.tilt,
     );
-    
+
     if (animate) {
-      await _controller!.updateCamera(cameraUpdate..setAnimation(
-        animation: nmaps.NCameraAnimation.easing,
-        duration: const Duration(milliseconds: 500),
-      ));
+      await _controller!.updateCamera(
+        cameraUpdate..setAnimation(
+          animation: nmaps.NCameraAnimation.easing,
+          duration: const Duration(milliseconds: 500),
+        ),
+      );
     } else {
       await _controller!.updateCamera(cameraUpdate);
     }
@@ -69,10 +77,13 @@ class NaverMapService implements MapService {
     if (_controller == null) {
       throw MapServiceException('Map controller not initialized');
     }
-    
+
     final cameraPosition = await _controller!.getCameraPosition();
     return UniversalCameraPosition(
-      target: UniversalLatLng(cameraPosition.target.latitude, cameraPosition.target.longitude),
+      target: UniversalLatLng(
+        cameraPosition.target.latitude,
+        cameraPosition.target.longitude,
+      ),
       zoom: cameraPosition.zoom,
       bearing: cameraPosition.bearing,
       tilt: cameraPosition.tilt,
@@ -82,19 +93,22 @@ class NaverMapService implements MapService {
   @override
   Future<void> addMarker(UniversalMarker marker) async {
     _universalMarkers[marker.id] = marker;
-    
+
     final nmarker = nmaps.NMarker(
       id: marker.id,
-      position: nmaps.NLatLng(marker.position.latitude, marker.position.longitude),
+      position: nmaps.NLatLng(
+        marker.position.latitude,
+        marker.position.longitude,
+      ),
     );
-    
+
     // 마커 탭 이벤트 설정
     nmarker.setOnTapListener((nmaps.NMarker tappedMarker) {
       _onMarkerTap?.call(tappedMarker.info.id);
     });
-    
+
     _markers.add(nmarker);
-    
+
     // 컨트롤러가 있으면 즉시 추가
     if (_controller != null) {
       await _controller!.addOverlay(nmarker);
@@ -111,15 +125,15 @@ class NaverMapService implements MapService {
   @override
   Future<void> removeMarker(String markerId) async {
     _universalMarkers.remove(markerId);
-    
-    final markerToRemove = _markers.where((marker) => marker.info.id == markerId).firstOrNull;
+
+    final markerToRemove =
+        _markers.where((marker) => marker.info.id == markerId).firstOrNull;
     if (markerToRemove != null) {
       _markers.remove(markerToRemove);
       if (_controller != null) {
-        await _controller!.deleteOverlay(nmaps.NOverlayInfo(
-          type: nmaps.NOverlayType.marker,
-          id: markerId,
-        ));
+        await _controller!.deleteOverlay(
+          nmaps.NOverlayInfo(type: nmaps.NOverlayType.marker, id: markerId),
+        );
       }
     }
   }
@@ -134,16 +148,18 @@ class NaverMapService implements MapService {
   @override
   Future<void> clearMarkers() async {
     _universalMarkers.clear();
-    
+
     if (_controller != null) {
       for (final marker in _markers) {
-        await _controller!.deleteOverlay(nmaps.NOverlayInfo(
-          type: nmaps.NOverlayType.marker,
-          id: marker.info.id,
-        ));
+        await _controller!.deleteOverlay(
+          nmaps.NOverlayInfo(
+            type: nmaps.NOverlayType.marker,
+            id: marker.info.id,
+          ),
+        );
       }
     }
-    
+
     _markers.clear();
   }
 
@@ -166,25 +182,34 @@ class NaverMapService implements MapService {
   @override
   Future<void> showUserLocation(bool show) async {
     if (_controller == null) return;
-    
+
     await _controller!.setLocationTrackingMode(
-      show ? nmaps.NLocationTrackingMode.follow : nmaps.NLocationTrackingMode.none,
+      show
+          ? nmaps.NLocationTrackingMode.follow
+          : nmaps.NLocationTrackingMode.none,
     );
   }
 
   @override
   Future<String?> getAddressFromCoordinates(UniversalLatLng position) async {
     return await _geocodingService.getAddressFromCoordinates(
-      position.latitude, 
+      position.latitude,
       position.longitude,
     );
   }
 
   @override
-  Future<List<UniversalLatLng>> getCoordinatesFromAddress(String address) async {
-    final locations = await _geocodingService.getCoordinatesFromAddress(address);
-    return locations.map((location) => 
-        UniversalLatLng(location.latitude, location.longitude)).toList();
+  Future<List<UniversalLatLng>> getCoordinatesFromAddress(
+    String address,
+  ) async {
+    final locations = await _geocodingService.getCoordinatesFromAddress(
+      address,
+    );
+    return locations
+        .map(
+          (location) => UniversalLatLng(location.latitude, location.longitude),
+        )
+        .toList();
   }
 
   @override
@@ -205,7 +230,7 @@ class NaverMapService implements MapService {
 
   @override
   void setOnMapLongPress(Function(UniversalLatLng position)? callback) {
-    _onMapLongPress = callback;
+    // _onMapLongPress = callback; // Currently unused
   }
 
   @override
@@ -224,26 +249,29 @@ class NaverMapService implements MapService {
   }
 
   @override
-  Future<void> fitBounds(List<UniversalLatLng> positions, {double padding = 50}) async {
+  Future<void> fitBounds(
+    List<UniversalLatLng> positions, {
+    double padding = 50,
+  }) async {
     if (_controller == null || positions.isEmpty) return;
-    
+
     double minLat = positions.first.latitude;
     double maxLat = positions.first.latitude;
     double minLng = positions.first.longitude;
     double maxLng = positions.first.longitude;
-    
+
     for (final position in positions) {
       minLat = minLat < position.latitude ? minLat : position.latitude;
       maxLat = maxLat > position.latitude ? maxLat : position.latitude;
       minLng = minLng < position.longitude ? minLng : position.longitude;
       maxLng = maxLng > position.longitude ? maxLng : position.longitude;
     }
-    
+
     final bounds = nmaps.NLatLngBounds(
       southWest: nmaps.NLatLng(minLat, minLng),
       northEast: nmaps.NLatLng(maxLat, maxLng),
     );
-    
+
     final cameraUpdate = nmaps.NCameraUpdate.fitBounds(bounds);
     await _controller!.updateCamera(cameraUpdate);
   }
@@ -256,22 +284,22 @@ class NaverMapService implements MapService {
   @override
   Future<UniversalLatLng?> screenToLatLng(Offset screenPoint) async {
     if (_controller == null) return null;
-    
+
     final latLng = await _controller!.screenLocationToLatLng(
-      nmaps.NPoint(screenPoint.dx, screenPoint.dy)
+      nmaps.NPoint(screenPoint.dx, screenPoint.dy),
     );
-    
+
     return UniversalLatLng(latLng.latitude, latLng.longitude);
   }
 
   @override
   Future<Offset?> latLngToScreen(UniversalLatLng position) async {
     if (_controller == null) return null;
-    
+
     final screenPoint = await _controller!.latLngToScreenLocation(
       nmaps.NLatLng(position.latitude, position.longitude),
     );
-    
+
     return Offset(screenPoint.x, screenPoint.y);
   }
 
@@ -281,7 +309,7 @@ class NaverMapService implements MapService {
     _markers.clear();
     _universalMarkers.clear();
     _onMapTap = null;
-    _onMapLongPress = null;
+    // _onMapLongPress = null; // Currently unused
     _onMarkerTap = null;
     _onCameraMove = null;
     _onCameraIdle = null;

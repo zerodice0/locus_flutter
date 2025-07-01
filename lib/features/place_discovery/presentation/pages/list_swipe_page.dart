@@ -8,10 +8,7 @@ import 'package:locus_flutter/features/place_discovery/presentation/widgets/swip
 class ListSwipePage extends ConsumerStatefulWidget {
   final List<PlaceWithDistance> places;
 
-  const ListSwipePage({
-    super.key,
-    required this.places,
-  });
+  const ListSwipePage({super.key, required this.places});
 
   @override
   ConsumerState<ListSwipePage> createState() => _ListSwipePageState();
@@ -42,9 +39,10 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
           ),
         ],
       ),
-      body: swipeDeck.isComplete
-          ? _buildCompletionView(swipeDeck.selectedPlace)
-          : _buildListView(swipeDeck),
+      body:
+          swipeDeck.isComplete
+              ? _buildCompletionView(swipeDeck.selectedPlace)
+              : _buildListView(swipeDeck),
     );
   }
 
@@ -58,10 +56,7 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
             SizedBox(height: 16),
             Text(
               '근처에 저장된 장소가 없습니다',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
           ],
         ),
@@ -77,7 +72,7 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
             color: Theme.of(context).cardColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -96,9 +91,9 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                   ),
                   Text(
                     '남은 장소: ${swipeDeck.remainingCount}개',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -126,33 +121,40 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
 
         // Places list
         Expanded(
-          child: swipeDeck.remainingPlaces.isEmpty
-              ? const Center(
-                  child: Text('모든 장소를 확인했습니다'),
-                )
-              : ListView.builder(
-                  itemCount: swipeDeck.remainingPlaces.length,
-                  itemBuilder: (context, index) {
-                    final place = swipeDeck.remainingPlaces[index];
-                    final isCurrentPlace = index == 0;
-                    
-                    return AnimatedOpacity(
-                      opacity: isCurrentPlace ? 1.0 : 0.6,
-                      duration: const Duration(milliseconds: 300),
-                      child: SwipeableListItem(
-                        key: ValueKey(place.place.id),
-                        placeWithDistance: place,
-                        onSwipeLeft: isCurrentPlace 
-                            ? () => ref.read(swipeDeckProvider.notifier).swipeLeft()
-                            : null,
-                        onSwipeRight: isCurrentPlace 
-                            ? () => ref.read(swipeDeckProvider.notifier).swipeRight()
-                            : null,
-                        onTap: () => _showPlaceDetails(place),
-                      ),
-                    );
-                  },
-                ),
+          child:
+              swipeDeck.remainingPlaces.isEmpty
+                  ? const Center(child: Text('모든 장소를 확인했습니다'))
+                  : ListView.builder(
+                    itemCount: swipeDeck.remainingPlaces.length,
+                    itemBuilder: (context, index) {
+                      final place = swipeDeck.remainingPlaces[index];
+                      final isCurrentPlace = index == 0;
+
+                      return AnimatedOpacity(
+                        opacity: isCurrentPlace ? 1.0 : 0.6,
+                        duration: const Duration(milliseconds: 300),
+                        child: SwipeableListItem(
+                          key: ValueKey(place.place.id),
+                          placeWithDistance: place,
+                          onSwipeLeft:
+                              isCurrentPlace
+                                  ? () =>
+                                      ref
+                                          .read(swipeDeckProvider.notifier)
+                                          .swipeLeft()
+                                  : null,
+                          onSwipeRight:
+                              isCurrentPlace
+                                  ? () =>
+                                      ref
+                                          .read(swipeDeckProvider.notifier)
+                                          .swipeRight()
+                                  : null,
+                          onTap: () => _showPlaceDetails(place),
+                        ),
+                      );
+                    },
+                  ),
         ),
 
         // Action buttons
@@ -162,7 +164,7 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
             color: Theme.of(context).cardColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, -2),
               ),
@@ -174,7 +176,9 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => ref.read(swipeDeckProvider.notifier).swipeLeft(),
+                      onPressed:
+                          () =>
+                              ref.read(swipeDeckProvider.notifier).swipeLeft(),
                       icon: const Icon(Icons.close),
                       label: const Text('싫어요'),
                       style: ElevatedButton.styleFrom(
@@ -186,7 +190,8 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => ref.read(swipeDeckProvider.notifier).skip(),
+                      onPressed:
+                          () => ref.read(swipeDeckProvider.notifier).skip(),
                       icon: const Icon(Icons.skip_next),
                       label: const Text('건너뛰기'),
                     ),
@@ -194,7 +199,9 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => ref.read(swipeDeckProvider.notifier).swipeRight(),
+                      onPressed:
+                          () =>
+                              ref.read(swipeDeckProvider.notifier).swipeRight(),
                       icon: const Icon(Icons.favorite),
                       label: const Text('좋아요'),
                       style: ElevatedButton.styleFrom(
@@ -205,11 +212,13 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                   ),
                 ],
               ),
-              
+
               if (swipeDeck.swipeHistory.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 TextButton.icon(
-                  onPressed: () => ref.read(swipeDeckProvider.notifier).undoLastSwipe(),
+                  onPressed:
+                      () =>
+                          ref.read(swipeDeckProvider.notifier).undoLastSwipe(),
                   icon: const Icon(Icons.undo),
                   label: const Text('이전으로'),
                 ),
@@ -228,11 +237,7 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.check_circle,
-              size: 100,
-              color: Colors.green,
-            ),
+            const Icon(Icons.check_circle, size: 100, color: Colors.green),
             const SizedBox(height: 20),
             Text(
               '선택 완료!',
@@ -253,7 +258,9 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                           width: 50,
                           height: 50,
                           decoration: BoxDecoration(
-                            color: _getCategoryColor(selectedPlace.place.categoryId),
+                            color: _getCategoryColor(
+                              selectedPlace.place.categoryId,
+                            ),
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: Icon(
@@ -269,24 +276,25 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
                             children: [
                               Text(
                                 selectedPlace.place.name,
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 selectedPlace.formattedDistance,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.copyWith(
                                   color: Theme.of(context).primaryColor,
                                 ),
                               ),
-                              if (selectedPlace.place.address?.isNotEmpty == true) ...[
+                              if (selectedPlace.place.address?.isNotEmpty ==
+                                  true) ...[
                                 const SizedBox(height: 4),
                                 Text(
                                   selectedPlace.place.address ?? '',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(color: Colors.grey[600]),
                                 ),
                               ],
                             ],
@@ -325,17 +333,13 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.sentiment_neutral,
-              size: 100,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.sentiment_neutral, size: 100, color: Colors.grey),
             const SizedBox(height: 20),
             Text(
               '선택된 장소가 없습니다',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Colors.grey,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -358,108 +362,115 @@ class _ListSwipePageState extends ConsumerState<ListSwipePage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        minChildSize: 0.3,
-        builder: (context, scrollController) => Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
+      builder:
+          (context) => DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            maxChildSize: 0.9,
+            minChildSize: 0.3,
+            builder:
+                (context, scrollController) => Container(
+                  padding: const EdgeInsets.all(20),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: _getCategoryColor(place.place.categoryId),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Icon(
-                              _getCategoryIcon(place.place.categoryId),
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  place.place.name,
-                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                      Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 60,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      color: _getCategoryColor(
+                                        place.place.categoryId,
+                                      ),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Icon(
+                                      _getCategoryIcon(place.place.categoryId),
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
                                   ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          place.place.name,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.headlineSmall?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          place.formattedDistance,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium?.copyWith(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              if (place.place.address?.isNotEmpty == true) ...[
+                                const SizedBox(height: 24),
+                                Text(
+                                  '주소',
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                  place.formattedDistance,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
+                                Text(place.place.address ?? ''),
                               ],
-                            ),
+
+                              if (place.place.description?.isNotEmpty ==
+                                  true) ...[
+                                const SizedBox(height: 16),
+                                Text(
+                                  '설명',
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(place.place.description ?? ''),
+                              ],
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      
-                      if (place.place.address?.isNotEmpty == true) ...[
-                        const SizedBox(height: 24),
-                        Text(
-                          '주소',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(place.place.address ?? ''),
-                      ],
-                      
-                      if (place.place.description?.isNotEmpty == true) ...[
-                        const SizedBox(height: 16),
-                        Text(
-                          '설명',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(place.place.description ?? ''),
-                      ],
                     ],
                   ),
                 ),
-              ),
-            ],
           ),
-        ),
-      ),
     );
   }
 
   void _openInMaps(PlaceWithDistance place) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${place.place.name}으로 길찾기를 시작합니다'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('${place.place.name}으로 길찾기를 시작합니다')));
   }
 
   Color _getCategoryColor(String categoryId) {

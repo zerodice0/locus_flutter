@@ -95,7 +95,7 @@ class MainDashboard extends StatelessWidget {
               Icon(
                 icon,
                 size: 48,
-                color: AppTheme.primaryGreen,
+                color: AppTheme.primaryBlue,
               ),
               const SizedBox(height: 12),
               Text(

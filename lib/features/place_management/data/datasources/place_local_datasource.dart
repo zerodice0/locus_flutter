@@ -12,17 +12,21 @@ abstract class PlaceLocalDataSource {
   Future<List<PlaceModel>> getAllPlaces();
   Future<List<PlaceModel>> getPlacesByCategory(String categoryId);
   Future<List<PlaceModel>> getActivePlaces();
-  Future<List<PlaceModel>> getPlacesNearby(double latitude, double longitude, double radiusKm);
+  Future<List<PlaceModel>> getPlacesNearby(
+    double latitude,
+    double longitude,
+    double radiusKm,
+  );
   Future<void> updatePlace(PlaceModel place);
   Future<void> deletePlace(String id);
   Future<void> incrementVisitCount(String placeId);
-  
+
   // Operating hours
   Future<void> insertOperatingHours(List<OperatingHoursModel> operatingHours);
   Future<List<OperatingHoursModel>> getOperatingHours(String placeId);
   Future<void> updateOperatingHours(List<OperatingHoursModel> operatingHours);
   Future<void> deleteOperatingHours(String placeId);
-  
+
   // Event periods
   Future<void> insertEventPeriods(List<EventPeriodModel> eventPeriods);
   Future<List<EventPeriodModel>> getEventPeriods(String placeId);
@@ -33,13 +37,11 @@ abstract class PlaceLocalDataSource {
 
 class PlaceLocalDataSourceImpl implements PlaceLocalDataSource {
   final DatabaseHelper _databaseHelper;
-  final Uuid _uuid;
+  // final Uuid _uuid; // Currently unused
 
-  PlaceLocalDataSourceImpl({
-    required DatabaseHelper databaseHelper,
-    Uuid? uuid,
-  }) : _databaseHelper = databaseHelper,
-       _uuid = uuid ?? const Uuid();
+  PlaceLocalDataSourceImpl({required DatabaseHelper databaseHelper, Uuid? uuid})
+    : _databaseHelper = databaseHelper;
+  // _uuid = uuid ?? const Uuid(); // Currently unused
 
   @override
   Future<String> insertPlace(PlaceModel place) async {
@@ -104,7 +106,9 @@ class PlaceLocalDataSourceImpl implements PlaceLocalDataSource {
     // Calculate bounding box for initial filtering
     const double earthRadius = 6371; // Earth's radius in kilometers
     final double deltaLat = radiusKm / earthRadius * (180 / math.pi);
-    final double deltaLng = radiusKm / (earthRadius * (math.pi / 180)) / 
+    final double deltaLng =
+        radiusKm /
+        (earthRadius * (math.pi / 180)) /
         math.cos(latitude * math.pi / 180);
 
     final double minLat = latitude - deltaLat;
@@ -166,7 +170,9 @@ class PlaceLocalDataSourceImpl implements PlaceLocalDataSource {
 
   // Operating hours methods
   @override
-  Future<void> insertOperatingHours(List<OperatingHoursModel> operatingHours) async {
+  Future<void> insertOperatingHours(
+    List<OperatingHoursModel> operatingHours,
+  ) async {
     if (operatingHours.isEmpty) return;
 
     await _databaseHelper.transaction((txn) async {
@@ -192,7 +198,9 @@ class PlaceLocalDataSourceImpl implements PlaceLocalDataSource {
   }
 
   @override
-  Future<void> updateOperatingHours(List<OperatingHoursModel> operatingHours) async {
+  Future<void> updateOperatingHours(
+    List<OperatingHoursModel> operatingHours,
+  ) async {
     if (operatingHours.isEmpty) return;
 
     await _databaseHelper.transaction((txn) async {

@@ -48,7 +48,7 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
                 '선택',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryGreen,
+                  color: AppTheme.primaryBlue,
                 ),
               ),
             ),
@@ -83,9 +83,9 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
             right: 16,
             child: FloatingActionButton(
               onPressed: () => _goToCurrentLocation(currentLocationAsync.value),
-              backgroundColor: AppTheme.primaryGreen,
-              child: const Icon(Icons.my_location),
+              backgroundColor: AppTheme.primaryBlue,
               tooltip: '현재 위치',
+              child: const Icon(Icons.my_location),
             ),
           ),
         ],
@@ -125,7 +125,7 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
           ElevatedButton(
             onPressed: _simulateLocationSelection,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryGreen,
+              backgroundColor: AppTheme.primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
             child: const Text(
@@ -158,7 +158,7 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -174,7 +174,7 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
               children: [
                 Icon(
                   Icons.location_on,
-                  color: AppTheme.primaryGreen,
+                  color: AppTheme.primaryBlue,
                   size: 24,
                 ),
                 const SizedBox(width: 8),
@@ -243,14 +243,14 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryGreen.withOpacity(0.1),
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.place,
-                      color: AppTheme.primaryGreen,
+                      color: AppTheme.primaryBlue,
                       size: 16,
                     ),
                     const SizedBox(width: 8),
@@ -258,7 +258,7 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
                       child: Text(
                         _selectedAddress!,
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryGreen,
+                          color: AppTheme.primaryBlue,
                         ),
                       ),
                     ),
@@ -283,7 +283,7 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
                   child: ElevatedButton(
                     onPressed: _confirmSelection,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryGreen,
+                      backgroundColor: AppTheme.primaryBlue,
                     ),
                     child: const Text('이 위치 사용'),
                   ),

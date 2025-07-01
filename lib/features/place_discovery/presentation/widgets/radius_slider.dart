@@ -89,20 +89,23 @@ class RadiusSlider extends StatelessWidget {
 
   Widget _buildPresetButtons(BuildContext context) {
     final presets = [0.5, 1.0, 2.0, 5.0];
-    
+
     return Wrap(
       spacing: 8,
-      children: presets.map((preset) {
-        final isSelected = (value - preset).abs() < 0.1;
-        
-        return FilterChip(
-          label: Text(_formatRadius(preset)),
-          selected: isSelected,
-          onSelected: (_) => onChanged(preset),
-          selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
-          backgroundColor: Colors.grey.withOpacity(0.1),
-        );
-      }).toList(),
+      children:
+          presets.map((preset) {
+            final isSelected = (value - preset).abs() < 0.1;
+
+            return FilterChip(
+              label: Text(_formatRadius(preset)),
+              selected: isSelected,
+              onSelected: (_) => onChanged(preset),
+              selectedColor: Theme.of(
+                context,
+              ).primaryColor.withValues(alpha: 0.2),
+              backgroundColor: Colors.grey.withValues(alpha: 0.1),
+            );
+          }).toList(),
     );
   }
 }

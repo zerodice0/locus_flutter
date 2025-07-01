@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:locus_flutter/features/place_management/domain/entities/place.dart';
-import 'package:locus_flutter/features/place_management/domain/entities/category.dart';
 import 'package:locus_flutter/features/place_management/domain/entities/operating_hours.dart';
 import 'package:locus_flutter/features/place_management/domain/entities/event_period.dart';
 import 'package:locus_flutter/core/services/map/map_service.dart';
 
 // Place form provider for adding/editing places
-final placeFormProvider = StateNotifierProvider<PlaceFormNotifier, PlaceFormState>((ref) {
-  return PlaceFormNotifier();
-});
+final placeFormProvider =
+    StateNotifierProvider<PlaceFormNotifier, PlaceFormState>((ref) {
+      return PlaceFormNotifier();
+    });
 
 class PlaceFormState {
   final String name;
@@ -71,7 +71,7 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
 
   void updateName(String name) {
     final errors = Map<String, String>.from(state.errors);
-    
+
     if (name.trim().isEmpty) {
       errors['name'] = '장소 이름을 입력해주세요';
     } else if (name.trim().length < 2) {
@@ -90,9 +90,7 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
   }
 
   void updateDescription(String description) {
-    state = state.copyWith(
-      description: description,
-    );
+    state = state.copyWith(description: description);
   }
 
   void updateLocation(UniversalLatLng location) {
@@ -107,14 +105,12 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
   }
 
   void updateAddress(String address) {
-    state = state.copyWith(
-      address: address,
-    );
+    state = state.copyWith(address: address);
   }
 
   void updateCategoryId(String categoryId) {
     final errors = Map<String, String>.from(state.errors);
-    
+
     if (categoryId.trim().isEmpty) {
       errors['categoryId'] = '카테고리를 선택해주세요';
     } else {
@@ -129,34 +125,26 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
   }
 
   void updateNotes(String notes) {
-    state = state.copyWith(
-      notes: notes,
-    );
+    state = state.copyWith(notes: notes);
   }
 
   void updateRating(double? rating) {
-    state = state.copyWith(
-      rating: rating,
-    );
+    state = state.copyWith(rating: rating);
   }
 
   void updateOperatingHours(List<OperatingHours> operatingHours) {
-    state = state.copyWith(
-      operatingHours: operatingHours,
-    );
+    state = state.copyWith(operatingHours: operatingHours);
   }
 
   void updateEventPeriods(List<EventPeriod> eventPeriods) {
-    state = state.copyWith(
-      eventPeriods: eventPeriods,
-    );
+    state = state.copyWith(eventPeriods: eventPeriods);
   }
 
   bool _validateForm(Map<String, String> errors) {
     return errors.isEmpty &&
-           state.name.trim().isNotEmpty &&
-           state.location != null &&
-           state.categoryId.trim().isNotEmpty;
+        state.name.trim().isNotEmpty &&
+        state.location != null &&
+        state.categoryId.trim().isNotEmpty;
   }
 
   void reset() {
@@ -187,7 +175,8 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
     return Place(
       id: '', // ID는 UseCase에서 생성됨
       name: state.name.trim(),
-      description: state.description.trim().isEmpty ? null : state.description.trim(),
+      description:
+          state.description.trim().isEmpty ? null : state.description.trim(),
       latitude: state.location!.latitude,
       longitude: state.location!.longitude,
       address: state.address.trim().isEmpty ? null : state.address.trim(),
@@ -198,7 +187,8 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
       notes: state.notes.trim().isEmpty ? null : state.notes.trim(),
       rating: state.rating,
       visitCount: 0,
-      operatingHours: state.operatingHours.isEmpty ? null : state.operatingHours,
+      operatingHours:
+          state.operatingHours.isEmpty ? null : state.operatingHours,
       eventPeriods: state.eventPeriods.isEmpty ? null : state.eventPeriods,
     );
   }
@@ -210,7 +200,8 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
 
     return existingPlace.copyWith(
       name: state.name.trim(),
-      description: state.description.trim().isEmpty ? null : state.description.trim(),
+      description:
+          state.description.trim().isEmpty ? null : state.description.trim(),
       latitude: state.location!.latitude,
       longitude: state.location!.longitude,
       address: state.address.trim().isEmpty ? null : state.address.trim(),
@@ -218,7 +209,8 @@ class PlaceFormNotifier extends StateNotifier<PlaceFormState> {
       updatedAt: DateTime.now(),
       notes: state.notes.trim().isEmpty ? null : state.notes.trim(),
       rating: state.rating,
-      operatingHours: state.operatingHours.isEmpty ? null : state.operatingHours,
+      operatingHours:
+          state.operatingHours.isEmpty ? null : state.operatingHours,
       eventPeriods: state.eventPeriods.isEmpty ? null : state.eventPeriods,
     );
   }

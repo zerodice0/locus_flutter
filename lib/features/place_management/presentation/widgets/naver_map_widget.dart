@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:locus_flutter/core/services/map/map_service.dart';
-import 'package:locus_flutter/core/config/map_config.dart';
 import 'package:locus_flutter/core/theme/app_theme.dart';
-import 'package:locus_flutter/features/place_management/domain/entities/place.dart' as app_place;
+import 'package:locus_flutter/features/place_management/domain/entities/place.dart'
+    as app_place;
 
 class NaverMapWidget extends StatefulWidget {
   final UniversalLatLng? initialLocation;
@@ -33,7 +33,7 @@ class NaverMapWidget extends StatefulWidget {
 
 class _NaverMapWidgetState extends State<NaverMapWidget> {
   NaverMapController? _controller;
-  Set<NMarker> _markers = {};
+  final Set<NMarker> _markers = {};
   NLatLng? _selectedLocation;
 
   // 기본 서울 위치
@@ -55,25 +55,23 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
 
   void _initializeMarkers() {
     _markers.clear();
-    
+
     if (widget.places != null) {
       for (final place in widget.places!) {
         final marker = NMarker(
           id: place.id,
           position: NLatLng(place.latitude, place.longitude),
-          caption: NOverlayCaption(
-            text: place.name,
-          ),
+          caption: NOverlayCaption(text: place.name),
           iconTintColor: _getMarkerColorForCategory(place.categoryId),
         );
-        
+
         marker.setOnTapListener((NMarker marker) {
           final selectedPlace = widget.places!.firstWhere(
             (p) => p.id == marker.info.id,
           );
           widget.onPlaceSelected?.call(selectedPlace);
         });
-        
+
         _markers.add(marker);
       }
     }
@@ -99,7 +97,7 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
       case 'education':
         return Colors.cyan;
       default:
-        return AppTheme.primaryGreen;
+        return AppTheme.primaryBlue;
     }
   }
 
@@ -145,11 +143,11 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
             // 카메라 변경 시 처리할 로직이 있다면 여기에
           },
         ),
-        
+
         // 위치 선택 모드일 때 선택된 위치 표시
         if (widget.enableLocationSelection && _selectedLocation != null)
           _buildSelectedLocationOverlay(),
-          
+
         // 지도 컨트롤 오버레이
         _buildMapControls(),
       ],
@@ -168,7 +166,7 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -179,16 +177,11 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.location_on,
-                  color: AppTheme.primaryGreen,
-                ),
+                const Icon(Icons.location_on, color: AppTheme.primaryBlue),
                 const SizedBox(width: 8),
                 const Text(
                   '선택된 위치',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 IconButton(
@@ -202,16 +195,13 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
             Text(
               '위도: ${_selectedLocation!.latitude.toStringAsFixed(6)}\n'
               '경도: ${_selectedLocation!.longitude.toStringAsFixed(6)}',
-              style: const TextStyle(
-                fontSize: 12,
-                fontFamily: 'monospace',
-              ),
+              style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: _confirmLocationSelection,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryGreen,
+                backgroundColor: AppTheme.primaryBlue,
               ),
               child: const Text('이 위치 선택'),
             ),
@@ -276,10 +266,8 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
     final selectionMarker = NMarker(
       id: 'selected_location',
       position: position,
-      caption: NOverlayCaption(
-        text: '선택된 위치',
-      ),
-      iconTintColor: AppTheme.primaryGreen,
+      caption: NOverlayCaption(text: '선택된 위치'),
+      iconTintColor: AppTheme.primaryBlue,
     );
 
     await _controller!.addOverlay(selectionMarker);
@@ -288,7 +276,12 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
   Future<void> _clearSelectionMarker() async {
     if (_controller != null) {
       try {
-        await _controller!.deleteOverlay(const NOverlayInfo(type: NOverlayType.marker, id: 'selected_location'));
+        await _controller!.deleteOverlay(
+          const NOverlayInfo(
+            type: NOverlayType.marker,
+            id: 'selected_location',
+          ),
+        );
       } catch (e) {
         // 마커가 존재하지 않는 경우 무시
       }
@@ -316,9 +309,7 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
     if (_controller != null) {
       final currentZoom = await _controller!.getCameraPosition();
       await _controller!.updateCamera(
-        NCameraUpdate.withParams(
-          zoom: currentZoom.zoom + 1,
-        ),
+        NCameraUpdate.withParams(zoom: currentZoom.zoom + 1),
       );
     }
   }
@@ -327,9 +318,7 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
     if (_controller != null) {
       final currentZoom = await _controller!.getCameraPosition();
       await _controller!.updateCamera(
-        NCameraUpdate.withParams(
-          zoom: currentZoom.zoom - 1,
-        ),
+        NCameraUpdate.withParams(zoom: currentZoom.zoom - 1),
       );
     }
   }
@@ -364,18 +353,16 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
     final marker = NMarker(
       id: place.id,
       position: NLatLng(place.latitude, place.longitude),
-      caption: NOverlayCaption(
-        text: place.name,
-      ),
+      caption: NOverlayCaption(text: place.name),
       iconTintColor: _getMarkerColorForCategory(place.categoryId),
     );
-    
+
     marker.setOnTapListener((NMarker marker) {
       widget.onPlaceSelected?.call(place);
     });
 
     await _controller!.addOverlay(marker);
-    
+
     setState(() {
       _markers.add(marker);
     });
@@ -386,7 +373,9 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
     if (_controller == null) return;
 
     try {
-      await _controller!.deleteOverlay(NOverlayInfo(type: NOverlayType.marker, id: placeId));
+      await _controller!.deleteOverlay(
+        NOverlayInfo(type: NOverlayType.marker, id: placeId),
+      );
       setState(() {
         _markers.removeWhere((marker) => marker.info.id == placeId);
       });

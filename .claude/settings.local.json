@@ -9,7 +9,9 @@
       "Bash(flutter packages pub run:*)",
       "Bash(grep:*)",
       "Bash(flutter build:*)",
-      "Bash(flutter:*)"
+      "Bash(flutter:*)",
+      "Bash(rg:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

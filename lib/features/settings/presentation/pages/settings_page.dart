@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:locus_flutter/features/place_management/presentation/providers/category_provider.dart';
+import 'category_management_page.dart';
+import 'data_management_page.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  ConsumerState<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,19 +48,29 @@ class SettingsPage extends StatelessWidget {
             context,
             title: '데이터 관리',
             children: [
-              _buildSettingTile(
-                context,
-                icon: Icons.folder,
-                title: '카테고리 관리',
-                subtitle: '장소 카테고리 수정',
-                onTap: () {},
+              Consumer(
+                builder: (context, ref, child) {
+                  final categoriesAsync = ref.watch(categoriesProvider);
+                  final categoriesCount = categoriesAsync.maybeWhen(
+                    data: (categories) => categories.length,
+                    orElse: () => 0,
+                  );
+                  
+                  return _buildSettingTile(
+                    context,
+                    icon: Icons.folder,
+                    title: '카테고리 관리',
+                    subtitle: '$categoriesCount개 카테고리',
+                    onTap: () => _navigateToCategoryManagement(),
+                  );
+                },
               ),
               _buildSettingTile(
                 context,
                 icon: Icons.backup,
                 title: '데이터 백업',
                 subtitle: '데이터 내보내기/가져오기',
-                onTap: () {},
+                onTap: () => _navigateToDataManagement(),
               ),
             ],
           ),
@@ -112,6 +131,22 @@ class SettingsPage extends StatelessWidget {
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
+    );
+  }
+
+  void _navigateToCategoryManagement() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const CategoryManagementPage(),
+      ),
+    );
+  }
+
+  void _navigateToDataManagement() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const DataManagementPage(),
+      ),
     );
   }
 }

@@ -47,10 +47,10 @@ class DuplicateWarningDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGreen.withOpacity(0.1),
+                color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: AppTheme.primaryGreen.withOpacity(0.3),
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.3),
                 ),
               ),
               child: Column(
@@ -60,14 +60,14 @@ class DuplicateWarningDialog extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.add_location,
-                        color: AppTheme.primaryGreen,
+                        color: AppTheme.primaryBlue,
                         size: 16,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '추가할 장소',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryGreen,
+                          color: AppTheme.primaryBlue,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -136,7 +136,7 @@ class DuplicateWarningDialog extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: _getDistanceColor(distance).withOpacity(0.2),
+                                color: _getDistanceColor(distance).withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -200,7 +200,7 @@ class DuplicateWarningDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
+                color: Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -249,7 +249,7 @@ class DuplicateWarningDialog extends StatelessWidget {
     } else if (distance < 0.2) { // 200m 이내
       return Colors.amber;
     } else {
-      return AppTheme.primaryGreen;
+      return AppTheme.primaryBlue;
     }
   }
 }

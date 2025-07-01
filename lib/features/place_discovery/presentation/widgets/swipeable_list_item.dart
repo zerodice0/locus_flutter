@@ -43,7 +43,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
   @override
   Widget build(BuildContext context) {
     final place = widget.placeWithDistance.place;
-    
+
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -53,7 +53,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
             children: [
               // Background actions
               _buildBackground(),
-              
+
               // Main card
               GestureDetector(
                 onTap: widget.onTap,
@@ -61,13 +61,16 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                 onHorizontalDragUpdate: _onDragUpdate,
                 onHorizontalDragEnd: _onDragEnd,
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -92,7 +95,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                           ),
                         ),
                         const SizedBox(width: 16),
-                        
+
                         // Place info
                         Expanded(
                           child: Column(
@@ -100,14 +103,13 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                             children: [
                               Text(
                                 place.name,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
-                              
+
                               Row(
                                 children: [
                                   Icon(
@@ -131,9 +133,16 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: widget.placeWithDistance.proximityLabel == '매우 가까움'
-                                          ? Colors.green
-                                          : widget.placeWithDistance.proximityLabel == '가까움'
+                                      color:
+                                          widget
+                                                      .placeWithDistance
+                                                      .proximityLabel ==
+                                                  '매우 가까움'
+                                              ? Colors.green
+                                              : widget
+                                                      .placeWithDistance
+                                                      .proximityLabel ==
+                                                  '가까움'
                                               ? Colors.orange
                                               : Colors.grey,
                                       borderRadius: BorderRadius.circular(8),
@@ -149,7 +158,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                                   ),
                                 ],
                               ),
-                              
+
                               if (place.address?.isNotEmpty == true) ...[
                                 const SizedBox(height: 4),
                                 Text(
@@ -162,7 +171,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
-                              
+
                               if (place.description?.isNotEmpty == true) ...[
                                 const SizedBox(height: 4),
                                 Text(
@@ -178,7 +187,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                             ],
                           ),
                         ),
-                        
+
                         // Swipe indicator
                         if (_dragUnderway)
                           Icon(
@@ -205,8 +214,8 @@ class _SwipeableListItemState extends State<SwipeableListItem>
   }
 
   Widget _buildBackground() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
+    // final screenWidth = MediaQuery.of(context).size.width; // Currently unused
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 120, // Approximate height of the list item
@@ -238,7 +247,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
                 ),
               ),
             ),
-          
+
           // Right action (like)
           if (_dragExtent > 0)
             Expanded(
@@ -320,9 +329,9 @@ class _SwipeableListItemState extends State<SwipeableListItem>
 
   void _onDragUpdate(DragUpdateDetails details) {
     final delta = details.primaryDelta ?? 0;
-    final screenWidth = MediaQuery.of(context).size.width;
+    // final screenWidth = MediaQuery.of(context).size.width; // Currently unused
     const maxDragExtent = 150.0;
-    
+
     setState(() {
       _dragExtent = (_dragExtent + delta).clamp(-maxDragExtent, maxDragExtent);
     });
@@ -330,7 +339,7 @@ class _SwipeableListItemState extends State<SwipeableListItem>
 
   void _onDragEnd(DragEndDetails details) {
     const threshold = 80.0;
-    
+
     if (_dragExtent.abs() > threshold) {
       // Complete the swipe
       if (_dragExtent > 0) {
@@ -349,15 +358,14 @@ class _SwipeableListItemState extends State<SwipeableListItem>
       widget.onSwipeRight?.call();
       _resetAfterSwipe();
     });
-    
+
     final animation = Tween<double>(
       begin: _dragExtent,
       end: MediaQuery.of(context).size.width,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
     animation.addListener(() {
       setState(() {
         _dragExtent = animation.value;
@@ -370,15 +378,14 @@ class _SwipeableListItemState extends State<SwipeableListItem>
       widget.onSwipeLeft?.call();
       _resetAfterSwipe();
     });
-    
+
     final animation = Tween<double>(
       begin: _dragExtent,
       end: -MediaQuery.of(context).size.width,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
     animation.addListener(() {
       setState(() {
         _dragExtent = animation.value;
@@ -393,15 +400,11 @@ class _SwipeableListItemState extends State<SwipeableListItem>
         _dragUnderway = false;
       });
     });
-    
-    final animation = Tween<double>(
-      begin: _dragExtent,
-      end: 0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
-    
+
+    final animation = Tween<double>(begin: _dragExtent, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
+
     animation.addListener(() {
       setState(() {
         _dragExtent = animation.value;

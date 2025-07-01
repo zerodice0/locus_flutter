@@ -40,7 +40,7 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
               color: Theme.of(context).cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -75,15 +75,13 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
                     const SizedBox(width: 8),
                     _buildSettingChip(
                       icon: Icons.category,
-                      label: searchSettings.categoryIds.isEmpty 
-                          ? '모든 카테고리' 
-                          : '${searchSettings.categoryIds.length}개 카테고리',
+                      label:
+                          searchSettings.categoryIds.isEmpty
+                              ? '모든 카테고리'
+                              : '${searchSettings.categoryIds.length}개 카테고리',
                     ),
                     const SizedBox(width: 8),
-                    _buildSettingChip(
-                      icon: Icons.sort,
-                      label: '거리순',
-                    ),
+                    _buildSettingChip(icon: Icons.sort, label: '거리순'),
                   ],
                 ),
               ],
@@ -107,16 +105,19 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
               height: 50,
               child: ElevatedButton.icon(
                 onPressed: _isSearching ? null : _searchNearbyPlaces,
-                icon: _isSearching 
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : const Icon(Icons.search),
+                icon:
+                    _isSearching
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                        : const Icon(Icons.search),
                 label: Text(_isSearching ? '검색 중...' : '근처 장소 찾기'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
@@ -130,14 +131,11 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
     );
   }
 
-  Widget _buildSettingChip({
-    required IconData icon,
-    required String label,
-  }) {
+  Widget _buildSettingChip({required IconData icon, required String label}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
+        color: Colors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -145,13 +143,7 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
         children: [
           Icon(icon, size: 14, color: Colors.grey[600]),
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         ],
       ),
     );
@@ -163,26 +155,16 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.explore_outlined,
-              size: 64,
-              color: Colors.grey,
-            ),
+            Icon(Icons.explore_outlined, size: 64, color: Colors.grey),
             SizedBox(height: 16),
             Text(
               '근처 장소 찾기를 시작하세요',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
             SizedBox(height: 8),
             Text(
               '아래 버튼을 눌러 탐색을 시작해보세요!',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ],
         ),
@@ -200,9 +182,9 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
               const SizedBox(width: 8),
               Text(
                 '${places.length}개의 장소를 찾았습니다',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -243,9 +225,9 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
           // Place preview
           Text(
             '미리보기',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
 
@@ -258,7 +240,9 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
                   margin: const EdgeInsets.only(bottom: 8),
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: _getCategoryColor(place.place.categoryId),
+                      backgroundColor: _getCategoryColor(
+                        place.place.categoryId,
+                      ),
                       child: Icon(
                         _getCategoryIcon(place.place.categoryId),
                         color: Colors.white,
@@ -278,10 +262,7 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
             Center(
               child: Text(
                 '그 외 ${places.length - 5}개 장소가 더 있습니다',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
             ),
         ],
@@ -323,15 +304,14 @@ class _PlaceDiscoveryPageState extends ConsumerState<PlaceDiscoveryPage> {
 
     try {
       // 임시로 서울 시청 좌표 사용 (실제 구현에서는 GPS 위치 사용)
-      await ref.read(nearbyPlacesProvider.notifier).searchPlaces(
-        currentLat: 37.5665,
-        currentLng: 126.9780,
-      );
+      await ref
+          .read(nearbyPlacesProvider.notifier)
+          .searchPlaces(currentLat: 37.5665, currentLng: 126.9780);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('검색 실패: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('검색 실패: $e')));
       }
     } finally {
       if (mounted) {

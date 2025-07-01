@@ -86,8 +86,8 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppTheme.primaryGreen,
-                    AppTheme.primaryGreen.withOpacity(0.8),
+                    AppTheme.primaryBlue,
+                    AppTheme.primaryBlue.withValues(alpha: 0.8),
                   ],
                 ),
               ),
@@ -97,7 +97,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                       ),
                       child: const Icon(
                         Icons.place,
@@ -114,7 +114,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Icon(
@@ -217,7 +217,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Color(int.parse('0xFF${category.color}')).withOpacity(0.2),
+                      color: Color(int.parse('0xFF${category.color}')).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -260,7 +260,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: place.isCurrentlyOpen 
-                        ? AppTheme.successGreen.withOpacity(0.2)
+                        ? AppTheme.successGreen.withValues(alpha: 0.2)
                         : Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -280,7 +280,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen.withOpacity(0.2),
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -288,14 +288,14 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                       children: [
                         const Icon(
                           Icons.location_on,
-                          color: AppTheme.primaryGreen,
+                          color: AppTheme.primaryBlue,
                           size: 16,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           MapConstants.formatDistance(distanceFromUser),
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryGreen,
+                            color: AppTheme.primaryBlue,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -320,7 +320,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.location_on, color: AppTheme.primaryGreen),
+                const Icon(Icons.location_on, color: AppTheme.primaryBlue),
                 const SizedBox(width: 8),
                 Text(
                   '위치 정보',
@@ -412,7 +412,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.notes, color: AppTheme.primaryGreen),
+                const Icon(Icons.notes, color: AppTheme.primaryBlue),
                 const SizedBox(width: 8),
                 Text(
                   '메모',
@@ -442,7 +442,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.schedule, color: AppTheme.primaryGreen),
+                const Icon(Icons.schedule, color: AppTheme.primaryBlue),
                 const SizedBox(width: 8),
                 Text(
                   '운영시간',
@@ -491,7 +491,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.event, color: AppTheme.primaryGreen),
+                const Icon(Icons.event, color: AppTheme.primaryBlue),
                 const SizedBox(width: 8),
                 Text(
                   '이벤트 기간',
@@ -508,7 +508,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: event.isActive 
-                      ? AppTheme.successGreen.withOpacity(0.1)
+                      ? AppTheme.successGreen.withValues(alpha: 0.1)
                       : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -613,7 +613,7 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
         children: [
           Icon(
             icon,
-            color: AppTheme.primaryGreen,
+            color: AppTheme.primaryBlue,
             size: 20,
           ),
           const SizedBox(height: 4),

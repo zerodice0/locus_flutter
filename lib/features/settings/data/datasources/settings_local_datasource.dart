@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../models/user_preferences_model.dart';
@@ -96,22 +97,18 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
       }
 
       // Clear existing data first
-      await placeDataSource.clearAllPlaces();
-      await categoryDataSource.clearAllCategories();
+      // Note: clearAllPlaces and clearAllCategories methods need to be implemented
+      // For now, we'll skip the clearing step and focus on importing new data
 
       // Import categories first (places depend on categories)
       final categoriesData = data['categories'] as List<dynamic>;
-      for (final categoryJson in categoriesData) {
-        // This would need to be implemented in CategoryLocalDataSource
-        // await categoryDataSource.insertCategory(CategoryModel.fromJson(categoryJson));
-      }
+      // TODO: Implement category import when CategoryLocalDataSource is updated
+      debugPrint('Categories to import: ${categoriesData.length}');
 
       // Import places
       final placesData = data['places'] as List<dynamic>;
-      for (final placeJson in placesData) {
-        // This would need to be implemented in PlaceLocalDataSource
-        // await placeDataSource.insertPlace(PlaceModel.fromJson(placeJson));
-      }
+      // TODO: Implement place import when PlaceLocalDataSource is updated
+      debugPrint('Places to import: ${placesData.length}');
 
       // Import preferences
       if (data.containsKey('preferences')) {

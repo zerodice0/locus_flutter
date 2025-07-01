@@ -139,7 +139,7 @@ class _EventPeriodsPickerState extends State<EventPeriodsPicker> {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: event.isActive 
-                        ? AppTheme.successGreen.withOpacity(0.2)
+                        ? AppTheme.successGreen.withValues(alpha: 0.2)
                         : Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -311,7 +311,7 @@ class _EventPeriodsPickerState extends State<EventPeriodsPicker> {
                               return Theme(
                                 data: Theme.of(context).copyWith(
                                   colorScheme: Theme.of(context).colorScheme.copyWith(
-                                    primary: AppTheme.primaryGreen,
+                                    primary: AppTheme.primaryBlue,
                                   ),
                                 ),
                                 child: child!,
@@ -349,7 +349,7 @@ class _EventPeriodsPickerState extends State<EventPeriodsPicker> {
                               return Theme(
                                 data: Theme.of(context).copyWith(
                                   colorScheme: Theme.of(context).colorScheme.copyWith(
-                                    primary: AppTheme.primaryGreen,
+                                    primary: AppTheme.primaryBlue,
                                   ),
                                 ),
                                 child: child!,
@@ -417,7 +417,7 @@ class _EventPeriodsPickerState extends State<EventPeriodsPicker> {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryGreen,
+                backgroundColor: AppTheme.primaryBlue,
               ),
               child: Text(existingEvent != null ? '수정' : '추가'),
             ),
