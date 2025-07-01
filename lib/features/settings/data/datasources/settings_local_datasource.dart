@@ -5,6 +5,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../models/user_preferences_model.dart';
 import '../../../place_management/data/datasources/place_local_datasource.dart';
 import '../../../place_management/data/datasources/category_local_datasource.dart';
+import '../../../place_management/data/models/place_model.dart';
+import '../../../place_management/data/models/category_model.dart';
 
 abstract class SettingsLocalDataSource {
   Future<UserPreferencesModel> getUserPreferences();
@@ -12,6 +14,7 @@ abstract class SettingsLocalDataSource {
   Future<void> clearPreferences();
   Future<Map<String, dynamic>> exportAllData();
   Future<void> importAllData(Map<String, dynamic> data);
+  Future<void> clearAllAppData();
   Future<String> getAppVersion();
   Future<bool> isFirstLaunch();
   Future<void> setFirstLaunchCompleted();
@@ -96,26 +99,40 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
         throw Exception('Invalid data format');
       }
 
-      // Clear existing data first
-      // Note: clearAllPlaces and clearAllCategories methods need to be implemented
-      // For now, we'll skip the clearing step and focus on importing new data
-
       // Import categories first (places depend on categories)
       final categoriesData = data['categories'] as List<dynamic>;
-      // TODO: Implement category import when CategoryLocalDataSource is updated
-      debugPrint('Categories to import: ${categoriesData.length}');
+      if (categoriesData.isNotEmpty) {
+        final categoryModels = categoriesData
+            .map((json) => CategoryModel.fromJson(json as Map<String, dynamic>))
+            .where((category) => !category.isDefault) // 기본 카테고리는 제외
+            .toList();
+        
+        if (categoryModels.isNotEmpty) {
+          await categoryDataSource.insertCategories(categoryModels);
+          debugPrint('Imported ${categoryModels.length} user categories');
+        }
+      }
 
       // Import places
       final placesData = data['places'] as List<dynamic>;
-      // TODO: Implement place import when PlaceLocalDataSource is updated
-      debugPrint('Places to import: ${placesData.length}');
+      if (placesData.isNotEmpty) {
+        final placeModels = placesData
+            .map((json) => PlaceModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+        
+        await placeDataSource.insertPlaces(placeModels);
+        debugPrint('Imported ${placeModels.length} places');
+      }
 
       // Import preferences
       if (data.containsKey('preferences')) {
         final preferencesData = data['preferences'] as Map<String, dynamic>;
         final preferences = UserPreferencesModel.fromJson(preferencesData);
         await saveUserPreferences(preferences);
+        debugPrint('Imported user preferences');
       }
+
+      debugPrint('Data import completed successfully');
     } catch (e) {
       throw Exception('Failed to import data: $e');
     }
@@ -141,5 +158,55 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   Future<void> setFirstLaunchCompleted() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_firstLaunchKey, true);
+  }
+
+  @override
+  Future<void> clearAllAppData() async {
+    try {
+      // 1. 모든 장소 데이터 삭제
+      await _clearAllPlaces();
+      
+      // 2. 사용자 정의 카테고리 삭제 (기본 카테고리는 유지)
+      await _clearUserCategories();
+      
+      // 3. 모든 설정 삭제
+      await clearPreferences();
+      
+      // 4. 첫 실행 플래그도 초기화
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_firstLaunchKey);
+      
+      debugPrint('All app data cleared successfully');
+    } catch (e) {
+      throw Exception('Failed to clear all app data: $e');
+    }
+  }
+
+  Future<void> _clearAllPlaces() async {
+    try {
+      // PlaceLocalDataSource에서 모든 장소 삭제
+      final places = await placeDataSource.getAllPlaces();
+      for (final place in places) {
+        await placeDataSource.deletePlace(place.id);
+      }
+      debugPrint('Cleared ${places.length} places');
+    } catch (e) {
+      debugPrint('Error clearing places: $e');
+      throw Exception('Failed to clear places: $e');
+    }
+  }
+
+  Future<void> _clearUserCategories() async {
+    try {
+      // 사용자 정의 카테고리만 삭제 (기본 카테고리는 유지)
+      final userCategories = await categoryDataSource.getUserCategories();
+      for (final category in userCategories) {
+        await categoryDataSource.deleteCategory(category.id);
+      }
+      debugPrint('Cleared ${userCategories.length} user categories');
+    } catch (e) {
+      debugPrint('Error clearing user categories: $e');
+      throw Exception('Failed to clear user categories: $e');
+    }
   }
 }

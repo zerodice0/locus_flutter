@@ -59,8 +59,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<void> clearAllData() async {
     try {
+      // 설정뿐만 아니라 앱의 모든 데이터를 삭제
       await localDataSource.clearPreferences();
-      // Additional cleanup would go here (places, categories, etc.)
+      
+      // 데이터 소스를 통해 모든 장소와 카테고리 데이터도 삭제
+      // 이는 데이터 소스 레벨에서 처리되어야 합니다
+      await localDataSource.clearAllAppData();
     } catch (e) {
       throw Exception('Failed to clear all data: $e');
     }

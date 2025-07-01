@@ -7,6 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:locus_flutter/core/theme/app_theme.dart';
 import 'package:locus_flutter/features/settings/data/datasources/settings_local_datasource.dart';
+import 'package:locus_flutter/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:locus_flutter/features/settings/domain/repositories/settings_repository.dart';
+import 'package:locus_flutter/features/settings/domain/usecases/clear_all_data.dart';
 import 'package:locus_flutter/features/place_management/presentation/providers/place_provider.dart';
 import 'package:locus_flutter/features/place_management/presentation/providers/category_provider.dart';
 
@@ -15,6 +18,16 @@ final settingsDataSourceProvider = Provider<SettingsLocalDataSource>((ref) {
     placeDataSource: ref.read(placeLocalDataSourceProvider),
     categoryDataSource: ref.read(categoryLocalDataSourceProvider),
   );
+});
+
+final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
+  return SettingsRepositoryImpl(
+    localDataSource: ref.read(settingsDataSourceProvider),
+  );
+});
+
+final clearAllDataUseCaseProvider = Provider<ClearAllData>((ref) {
+  return ClearAllData(ref.read(settingsRepositoryProvider));
 });
 
 class DataManagementPage extends ConsumerStatefulWidget {
@@ -419,10 +432,9 @@ class _DataManagementPageState extends ConsumerState<DataManagementPage> {
     setState(() => _isLoading = true);
 
     try {
-      // TODO: 모든 데이터 삭제 로직 구현
-      // 현재는 임시로 설정만 삭제
-      final dataSource = ref.read(settingsDataSourceProvider);
-      await dataSource.clearPreferences();
+      // Clean Architecture 패턴에 따라 Use Case를 통해 데이터 삭제
+      final clearAllDataUseCase = ref.read(clearAllDataUseCaseProvider);
+      await clearAllDataUseCase.call();
 
       // UI 새로고침
       ref.read(placesProvider.notifier).refreshPlaces();

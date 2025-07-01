@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:locus_flutter/features/common/presentation/widgets/custom_app_bar.dart';
@@ -362,15 +363,19 @@ class _RealMapLocationPickerPageState extends ConsumerState<RealMapLocationPicke
     }
   }
 
-  void _copyCoordinates() {
-    // TODO: 클립보드에 복사 기능 구현
+  void _copyCoordinates() async {
     if (_selectedLocation != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('좌표가 클립보드에 복사되었습니다'),
-          backgroundColor: AppTheme.successGreen,
-        ),
-      );
+      final coordinatesText = '${_selectedLocation!.latitude}, ${_selectedLocation!.longitude}';
+      await Clipboard.setData(ClipboardData(text: coordinatesText));
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('좌표가 클립보드에 복사되었습니다\n$coordinatesText'),
+            backgroundColor: AppTheme.successGreen,
+          ),
+        );
+      }
     }
   }
 

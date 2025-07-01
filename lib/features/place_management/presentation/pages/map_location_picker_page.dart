@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:locus_flutter/features/common/presentation/widgets/custom_app_bar.dart';
@@ -6,6 +7,7 @@ import 'package:locus_flutter/features/common/presentation/widgets/loading_widge
 import 'package:locus_flutter/features/common/presentation/providers/location_provider.dart';
 import 'package:locus_flutter/core/theme/app_theme.dart';
 import 'package:locus_flutter/core/services/map/map_service.dart';
+import 'package:locus_flutter/core/services/location/geocoding_service.dart';
 
 class MapLocationPickerPage extends ConsumerStatefulWidget {
   final UniversalLatLng? initialLocation;
@@ -330,37 +332,41 @@ class _MapLocationPickerPageState extends ConsumerState<MapLocationPickerPage> {
     setState(() => _isLoading = true);
     
     try {
-      // TODO: 실제 구현에서는 Geocoding 서비스 사용
-      await Future.delayed(const Duration(seconds: 1)); // 시뮬레이션
-      
-      // 임시 주소
-      final address = '서울특별시 강남구 역삼동 ${(location.latitude * 1000).toInt()}번지';
+      final geocodingService = ref.read(geocodingServiceProvider);
+      final address = await geocodingService.getAddressFromCoordinates(
+        location.latitude, 
+        location.longitude
+      );
       
       if (mounted) {
         setState(() {
-          _selectedAddress = address;
+          _selectedAddress = address ?? '주소를 찾을 수 없습니다';
           _isLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _selectedAddress = '주소를 가져올 수 없습니다';
+          _selectedAddress = '주소 로딩 실패';
           _isLoading = false;
         });
       }
     }
   }
 
-  void _copyCoordinates() {
+  void _copyCoordinates() async {
     if (_selectedLocation != null) {
-      // TODO: 클립보드에 복사 기능 구현
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('좌표가 클립보드에 복사되었습니다'),
-          backgroundColor: AppTheme.successGreen,
-        ),
-      );
+      final coordinatesText = '${_selectedLocation!.latitude}, ${_selectedLocation!.longitude}';
+      await Clipboard.setData(ClipboardData(text: coordinatesText));
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('좌표가 클립보드에 복사되었습니다\n$coordinatesText'),
+            backgroundColor: AppTheme.successGreen,
+          ),
+        );
+      }
     }
   }
 

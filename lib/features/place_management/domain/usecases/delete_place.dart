@@ -87,15 +87,18 @@ class DeleteMultiplePlaces {
       }
     }
     
-    // Delete places one by one
-    // TODO: Consider implementing batch delete in repository for better performance
-    for (final placeId in placeIds) {
-      try {
-        await _repository.deletePlace(placeId);
-      } catch (e) {
-        // Continue deleting other places even if one fails
-        // You might want to collect errors and report them
-        continue;
+    // Use batch delete for better performance
+    try {
+      await _repository.deletePlaces(placeIds);
+    } catch (e) {
+      // Fallback to individual deletion if batch fails
+      for (final placeId in placeIds) {
+        try {
+          await _repository.deletePlace(placeId);
+        } catch (individualError) {
+          // Continue deleting other places even if one fails
+          continue;
+        }
       }
     }
   }

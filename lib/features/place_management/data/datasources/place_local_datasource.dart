@@ -8,6 +8,7 @@ import 'package:locus_flutter/features/place_management/data/models/event_period
 
 abstract class PlaceLocalDataSource {
   Future<String> insertPlace(PlaceModel place);
+  Future<void> insertPlaces(List<PlaceModel> places);
   Future<PlaceModel?> getPlace(String id);
   Future<List<PlaceModel>> getAllPlaces();
   Future<List<PlaceModel>> getPlacesByCategory(String categoryId);
@@ -48,6 +49,14 @@ class PlaceLocalDataSourceImpl implements PlaceLocalDataSource {
     final placeData = place.toDatabase();
     await _databaseHelper.insert(DatabaseConstants.tablePlaces, placeData);
     return place.id;
+  }
+
+  @override
+  Future<void> insertPlaces(List<PlaceModel> places) async {
+    for (final place in places) {
+      final placeData = place.toDatabase();
+      await _databaseHelper.insert(DatabaseConstants.tablePlaces, placeData);
+    }
   }
 
   @override

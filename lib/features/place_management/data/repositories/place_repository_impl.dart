@@ -108,6 +108,16 @@ class PlaceRepositoryImpl implements PlaceRepository {
   }
 
   @override
+  Future<void> deletePlaces(List<String> ids) async {
+    // Batch delete for better performance
+    for (final id in ids) {
+      await _placeDataSource.deleteOperatingHours(id);
+      await _placeDataSource.deleteEventPeriods(id);
+      await _placeDataSource.deletePlace(id);
+    }
+  }
+
+  @override
   Future<void> incrementVisitCount(String placeId) async {
     await _placeDataSource.incrementVisitCount(placeId);
   }

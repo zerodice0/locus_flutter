@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:locus_flutter/features/common/presentation/widgets/custom_app_bar.dart';
 import 'package:locus_flutter/features/common/presentation/widgets/loading_widget.dart';
 import 'package:locus_flutter/features/common/presentation/widgets/error_widget.dart';
@@ -768,10 +769,37 @@ class _PlaceDetailPageState extends ConsumerState<PlaceDetailPage> {
     }
   }
 
-  void _openInMap(Place place) {
-    // TODO: 지도 앱에서 해당 위치 열기
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('지도 연동 기능은 개발 중입니다')),
-    );
+  void _openInMap(Place place) async {
+    final lat = place.latitude;
+    final lng = place.longitude;
+    final name = Uri.encodeComponent(place.name);
+    
+    // 지도 앱 URL 생성 (iOS: Apple Maps, Android: Google Maps)
+    final appleMapUrl = 'http://maps.apple.com/?q=$name&ll=$lat,$lng';
+    final googleMapUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    
+    try {
+      // iOS는 Apple Maps, Android는 Google Maps 시도
+      final url = Theme.of(context).platform == TargetPlatform.iOS 
+          ? appleMapUrl 
+          : googleMapUrl;
+      
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      } else {
+        // 기본 지도 앱이 없는 경우 브라우저에서 Google Maps 열기
+        final fallbackUrl = 'https://maps.google.com/?q=$lat,$lng';
+        await launchUrl(Uri.parse(fallbackUrl), mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('지도 앱을 열 수 없습니다: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

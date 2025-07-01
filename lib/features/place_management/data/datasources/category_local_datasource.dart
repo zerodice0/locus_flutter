@@ -5,6 +5,7 @@ import 'package:locus_flutter/features/place_management/data/models/category_mod
 
 abstract class CategoryLocalDataSource {
   Future<String> insertCategory(CategoryModel category);
+  Future<void> insertCategories(List<CategoryModel> categories);
   Future<CategoryModel?> getCategory(String id);
   Future<List<CategoryModel>> getAllCategories();
   Future<List<CategoryModel>> getDefaultCategories();
@@ -29,6 +30,14 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
     final categoryData = category.toDatabase();
     await _databaseHelper.insert(DatabaseConstants.tableCategories, categoryData);
     return category.id;
+  }
+
+  @override
+  Future<void> insertCategories(List<CategoryModel> categories) async {
+    for (final category in categories) {
+      final categoryData = category.toDatabase();
+      await _databaseHelper.insert(DatabaseConstants.tableCategories, categoryData);
+    }
   }
 
   @override

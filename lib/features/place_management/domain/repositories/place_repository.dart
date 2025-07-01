@@ -13,6 +13,7 @@ abstract class PlaceRepository {
   Future<List<Place>> getPlacesNearby(double latitude, double longitude, double radiusKm);
   Future<void> updatePlace(Place place);
   Future<void> deletePlace(String id);
+  Future<void> deletePlaces(List<String> ids);
   Future<void> incrementVisitCount(String placeId);
   
   // Category operations

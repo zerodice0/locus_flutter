@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:locus_flutter/features/place_discovery/domain/entities/place_with_distance.dart';
 import 'package:locus_flutter/features/place_discovery/presentation/providers/swipe_provider.dart';
 import 'package:locus_flutter/features/place_discovery/presentation/widgets/swipeable_card.dart';
@@ -388,13 +389,38 @@ class _CardSwipePageState extends ConsumerState<CardSwipePage> {
     );
   }
 
-  void _openInMaps(PlaceWithDistance place) {
-    // TODO: Implement navigation to maps app
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${place.place.name}으로 길찾기를 시작합니다'),
-      ),
-    );
+  void _openInMaps(PlaceWithDistance place) async {
+    final lat = place.place.latitude;
+    final lng = place.place.longitude;
+    final name = Uri.encodeComponent(place.place.name);
+    
+    // 지도 앱 URL 생성 (iOS: Apple Maps, Android: Google Maps)
+    final appleMapUrl = 'http://maps.apple.com/?q=$name&ll=$lat,$lng';
+    final googleMapUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    
+    try {
+      // iOS는 Apple Maps, Android는 Google Maps 시도
+      final url = Theme.of(context).platform == TargetPlatform.iOS 
+          ? appleMapUrl 
+          : googleMapUrl;
+      
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      } else {
+        // 기본 지도 앱이 없는 경우 브라우저에서 Google Maps 열기
+        final fallbackUrl = 'https://maps.google.com/?q=$lat,$lng';
+        await launchUrl(Uri.parse(fallbackUrl), mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('지도 앱을 열 수 없습니다: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   int min(int a, int b) => a < b ? a : b;
